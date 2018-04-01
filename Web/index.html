@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title>Audioclient</title>
+		<style>
+			body {
+				background: #36393f;
+			}
+		</style>
+	</head>	
+	<body>
+	
+	
+	</body>
+	<script>
+		var ws = new WebSocket('ws://localhost');
+		
+	    ws.onopen = function() { 
+	    	console.log('Connected!'); 
+	    };
+	    
+	    ws.onclose = function() { 
+	    	console.log('Lost connection'); 
+	    };
+	    
+	    ws.onmessage = function(msg) { 
+	    	console.log(msg.data); 
+	    };
+	</script>
+</html>
