@@ -11,19 +11,17 @@
 	
 	
 	</body>
+	<script src="js/Audioclient.js"></script>
 	<script>
-		var ws = new WebSocket('ws://localhost');
+		ac = new Audioclient("ws://localhost")
 		
-	    ws.onopen = function() { 
-	    	console.log('Connected!'); 
-	    };
-	    
-	    ws.onclose = function() { 
-	    	console.log('Lost connection'); 
-	    };
-	    
-	    ws.onmessage = function(msg) { 
-	    	console.log(msg.data); 
-	    };
+		ac.on("handshake", function(message){
+			console.log(message);
+		})
+		
+		// wait will connected
+		ac.ws.onopen = function() { 
+			ac.send("handshake", "TheIndra")
+		}
 	</script>
 </html>

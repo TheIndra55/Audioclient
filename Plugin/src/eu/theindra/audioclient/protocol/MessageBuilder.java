@@ -4,6 +4,8 @@ import org.webbitserver.WebSocketConnection;
 
 import com.google.gson.JsonObject;
 
+import eu.theindra.audioclient.utils.TimestampUtils;
+
 public class MessageBuilder {
 
 	private String type;
@@ -19,6 +21,9 @@ public class MessageBuilder {
 		
 		message.addProperty("type", this.type);
 		message.addProperty("message", this.message);
+		
+		// add 'now' string to check latency at client
+		message.addProperty("now", TimestampUtils.getISO8601Now());
 		
 		connection.send(message.toString());
 	}

@@ -8,6 +8,18 @@ public class Main extends JavaPlugin {
 	
 	public static Audioclient client;
 	
+	// debugging purposes
+    public static void main(String[] args) {
+		client = new Audioclient(80);
+		
+		client.init();
+		client.startServer();
+		
+		while(true){
+			
+		}
+    }
+	
 	public void onEnable(){
 		client = new Audioclient(80);
 		
