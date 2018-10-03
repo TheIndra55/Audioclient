@@ -5,7 +5,7 @@ A Minecraft audioclient which implements their own protocol over websockets.
 This project is currently not maintained, the code should be enough to make a working audioclient. It's only in lack of commands and a webinterface.
 
 ## Javascript implementation
-There's a current javascript implementation which can be linked from your webpage in `Audioclient/Web/js/Audioclient.js` you can simply use the following code to listen for all "play" packages
+There's a current javascript implementation which can be linked from your webpage in `Web/js/Audioclient.js` you can simply use the following code to listen for all "play" packages
 
 ```js
 // construct a new audioclient object
