@@ -9,10 +9,6 @@ version = 1_0
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-tasks.withType(Jar) {
-    destinationDir = file("C:/Users/Michel/Desktop/servert/plugins")
-}
-
 repositories {
     mavenCentral()
     jcenter()
