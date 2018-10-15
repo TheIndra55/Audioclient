@@ -1,0 +1,37 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.1'
+    id 'java'
+}
+
+group = "Audioclient"
+version = 1_0
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(Jar) {
+    destinationDir = file("C:/Users/Michel/Desktop/servert/plugins")
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    mavenLocal()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven { url "http://repo.dmulloy2.net/nexus/repository/public/" }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+	compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+	compile group: 'org.webbitserver', name: 'webbit', version: '0.4.15'
+}
+
+build.dependsOn shadowJar
