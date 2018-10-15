@@ -13,15 +13,22 @@
 	</body>
 	<script src="js/Audioclient.js"></script>
 	<script>
-		ac = new Audioclient("ws://localhost")
+		//Params example:
+		//{url}?user=TheIndra55
+		
+		ac = new Audioclient("ws://localhost:8003")
 		
 		ac.on("handshake", function(message){
 			console.log(message);
 		})
 		
+		ac.on("test", function(message){
+			console.log(message);
+		})
+		
 		// wait will connected
 		ac.ws.onopen = function() { 
-			ac.send("handshake", "TheIndra")
+			ac.send("handshake", ac.u_params.user)
 		}
 	</script>
 </html>

@@ -1,10 +1,24 @@
 console.log("This audioclient is publicly available at https://github.com/TheIndra55/Audioclient")
 
 var callbacks = [];
+var params;
+var tokens;
+
+function getQueryParams() {
+    var qs = document.location.search.split('+').join(' ');
+    params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+}
 
 function Audioclient(address){
 	
-	this.ws = new WebSocket('ws://localhost');
+	getQueryParams();
+	this.u_params = params;
+	this.ws = new WebSocket(address);
 	
 	// latency is not realtime and only checked when messages are send
 	this.latency = 0;

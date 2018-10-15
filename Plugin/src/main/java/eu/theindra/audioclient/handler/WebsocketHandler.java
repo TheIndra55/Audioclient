@@ -33,7 +33,7 @@ public class WebsocketHandler extends BaseWebSocketHandler {
     		Main.client.addClient(connection, decoded.getMessage());
     		
     		// send back handshake
-    		new MessageBuilder("handshake", "")
+    		new MessageBuilder("handshake", "The server and your client are friends ;)")
     			.send(connection);
     	}	
     }
