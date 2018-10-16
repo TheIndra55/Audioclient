@@ -69,5 +69,19 @@ public class AudioManager {
 	private Audioclient getClient(){
 		return Main.client;
 	}
+
+	/**
+	 * Broadcasts a custom message at every connected client
+	 * @param type
+	 * @param message
+	 */
+	public void broadcast(String type, String message) {
+		List<WebSocketConnection> clients = getClient().getAllClients();
+		
+		for(WebSocketConnection client : clients){
+			new MessageBuilder(type, message)
+			.send(client);
+		}
+	}
 	
 }

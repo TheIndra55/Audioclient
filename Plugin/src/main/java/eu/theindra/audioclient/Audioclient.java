@@ -32,8 +32,6 @@ public class Audioclient {
 	
 	public void stopServer(){
 		webServer.stop();
-		
-		clients.clear();
 	}
 
 	public int getPort() {

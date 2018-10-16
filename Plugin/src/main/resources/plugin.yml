@@ -1,0 +1,7 @@
+name: AudioClient
+version: 1.0
+description: TODO
+main: eu.theindra.audioclient.Main
+commands:
+   audioclient:
+      description: TODO

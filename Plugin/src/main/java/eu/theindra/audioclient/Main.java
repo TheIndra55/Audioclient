@@ -10,7 +10,7 @@ public class Main extends JavaPlugin {
 	
 	// debugging purposes
     public static void main(String[] args) {
-		client = new Audioclient(80);
+		client = new Audioclient(8003);
 		
 		client.init();
 		client.startServer();
@@ -21,7 +21,8 @@ public class Main extends JavaPlugin {
     }
 	
 	public void onEnable(){
-		client = new Audioclient(80);
+		// TODO: Load config and the port from config
+		client = new Audioclient(8003);
 		
 		client.init();
 		client.startServer();
