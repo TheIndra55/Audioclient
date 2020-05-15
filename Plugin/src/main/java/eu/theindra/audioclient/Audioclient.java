@@ -1,24 +1,34 @@
 package eu.theindra.audioclient;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import eu.theindra.audioclient.auth.Client;
+import eu.theindra.audioclient.handler.WebsocketHandler;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
 import org.webbitserver.WebSocketConnection;
 
-import eu.theindra.audioclient.handler.WebsocketHandler;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Audioclient {
+
+	private static Audioclient instance;
+
+	public static Audioclient getInstance() {
+		return instance;
+	}
 
 	private final int port;
 	private WebServer webServer;
 	
-	private HashMap<WebSocketConnection, String> clients = new HashMap<WebSocketConnection, String>();
+	private final HashMap<Client, UUID> clients = new HashMap<>();
 	
 	public Audioclient(int port){
 		this.port = port;
+
+		instance = this;
 	}
 	
 	public void init(){
@@ -38,26 +48,12 @@ public class Audioclient {
 		return port;
 	}
 	
-	public List<WebSocketConnection> getClientsByUsername(String username){
-		List<WebSocketConnection> clients = new ArrayList<WebSocketConnection>();
-		
-		for(WebSocketConnection client : getClients().keySet()){
-			if(getClients().get(client).equals(username)){
-				clients.add(client);
-			}
-		}
-		
-		return clients;
+	public List<Client> getClientsByUUID(UUID uuid){
+		return getClients().keySet().stream().filter(client -> getClients().get(client).equals(uuid)).collect(Collectors.toList());
 	}
 	
-	public List<WebSocketConnection> getAllClients(){
-		List<WebSocketConnection> clients = new ArrayList<WebSocketConnection>();
-		
-		for(WebSocketConnection client : getClients().keySet()){
-			clients.add(client);
-		}
-		
-		return clients;
+	public List<Client> getAllClients(){
+		return new ArrayList<>(getClients().keySet());
 	}
 	
 	public void removeClient(WebSocketConnection connection){
@@ -68,11 +64,11 @@ public class Audioclient {
 		return clients.containsKey(connection);
 	}
 	
-	public void addClient(WebSocketConnection connection, String name){
-		clients.put(connection, name);
+	public void addClient(UUID uuid, WebSocketConnection connection){
+		clients.put(new Client(uuid, connection), uuid);
 	}
-	
-	public HashMap<WebSocketConnection, String> getClients(){
+
+	public HashMap<Client, UUID> getClients() {
 		return clients;
 	}
 }

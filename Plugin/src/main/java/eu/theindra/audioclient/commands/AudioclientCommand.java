@@ -6,6 +6,9 @@ import org.bukkit.command.CommandSender;
 
 import eu.theindra.audioclient.audio.AudioManager;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class AudioclientCommand implements CommandExecutor{
 
 	@Override
@@ -13,12 +16,8 @@ public class AudioclientCommand implements CommandExecutor{
 		//TODO: Fix an awesome command
 		//For now its just 'kut'
 		if(args[0].equalsIgnoreCase("broadcast")) {
-			//TODO: Collections (Java 8).
-			StringBuilder sb = new StringBuilder();
-			for (int i = 2; i < args.length; i++) {
-				sb.append(args[i]).append(" ");
-			}
-			new AudioManager().broadcast(args[1],sb.toString());
+			String sb = IntStream.range(2, args.length).mapToObj(i -> args[i] + " ").collect(Collectors.joining());
+			new AudioManager().broadcast(args[1], sb);
 		}
 		return false;
 	}

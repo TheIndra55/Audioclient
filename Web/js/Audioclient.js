@@ -23,20 +23,26 @@ function Audioclient(address){
 	// latency is not realtime and only checked when messages are send
 	this.latency = 0;
 	
-	this.ws.onmessage = function(message){	
-		var json = JSON.parse(message.data);
-	
-		var calls = callbacks.filter(x => x.type == json.type);
+	this.ws.onmessage = function(event){
+		//Hacky workaround for recieving data :)
+	        (async () => {
+  			const blob = new Blob([event.data]);
+ 		        const buf = await blob.arrayBuffer();
+  			var decoded = msgpack.deserialize(buf);
+
+			var calls = callbacks.filter(x => x.type == decoded.type);
 		
-		for (var i = 0; i < calls.length; i++) {
-			calls[i].callback(json.message);
-		}
+			for (var i = 0; i < calls.length; i++) {
+				calls[i].callback(decoded.message);				}
 		
-		this.latency = new Date() - new Date(json.now);
+			this.latency = new Date() - new Date(decoded.now);
+		})();
 	}
 	
 	this.send = function(type, message){
-		this.ws.send(JSON.stringify({type: type, message: message}));
+		var data = {type: type, message: message};
+		var bytes = msgpack.serialize(data);
+		this.ws.send(bytes);
 	}
 	
 	this.on = function(type, callback){

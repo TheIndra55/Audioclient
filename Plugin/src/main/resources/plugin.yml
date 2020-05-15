@@ -1,6 +1,11 @@
 name: AudioClient
-version: 1.0
+version: 2.0
 description: TODO
+api-version: 1.13
+authors:
+   - TheIndra55
+   - Eftelist
+url: https://github.com/TheIndra55/Audioclient
 main: eu.theindra.audioclient.Main
 commands:
    audioclient:

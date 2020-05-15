@@ -1,28 +1,27 @@
 package eu.theindra.audioclient.handler;
 
+import eu.theindra.audioclient.Audioclient;
+import eu.theindra.audioclient.auth.Auth;
+import eu.theindra.audioclient.protocol.Message;
+import eu.theindra.audioclient.utils.MessageDecoder;
 import org.webbitserver.BaseWebSocketHandler;
 import org.webbitserver.WebSocketConnection;
-
-import eu.theindra.audioclient.Main;
-import eu.theindra.audioclient.protocol.MessageBuilder;
-import eu.theindra.audioclient.protocol.MessageDecoder;
 
 public class WebsocketHandler extends BaseWebSocketHandler {
 
     public void onOpen(WebSocketConnection connection) { }
 
     public void onClose(WebSocketConnection connection) { 
-    	Main.client.removeClient(connection);
+    	Audioclient.getInstance().removeClient(connection);
     }
 
-    public void onMessage(WebSocketConnection connection, String message) {
-    	System.out.println(message);
-    	
-    	MessageDecoder decoded = null;
+    public void onMessage(WebSocketConnection connection, byte[] message) {
+    	Message decoded = null;
     	
     	try {
     		decoded = new MessageDecoder(message).decode();
     	}catch(Exception e){
+    		e.printStackTrace();
     		connection.close();
     		
     		return;
@@ -30,11 +29,10 @@ public class WebsocketHandler extends BaseWebSocketHandler {
     
     	// server should only receive handshake nothing else
     	if(decoded.getType().equals("handshake")){
-    		Main.client.addClient(connection, decoded.getMessage());
-    		
-    		// send back handshake
-    		new MessageBuilder("handshake", "The server and your client are friends ;)")
-    			.send(connection);
+    		//Check if decoded message is a token of length 8
+    		if(decoded.getMessage().length() == 8){
+				Auth.validate(decoded.getMessage(), connection);
+			}
     	}	
     }
 	

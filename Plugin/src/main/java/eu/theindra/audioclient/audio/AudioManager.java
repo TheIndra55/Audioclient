@@ -1,26 +1,25 @@
 package eu.theindra.audioclient.audio;
 
-import java.util.List;
-
-import org.webbitserver.WebSocketConnection;
-
 import eu.theindra.audioclient.Audioclient;
-import eu.theindra.audioclient.Main;
-import eu.theindra.audioclient.protocol.MessageBuilder;
+import eu.theindra.audioclient.auth.Client;
+import eu.theindra.audioclient.protocol.Message;
+
+import java.util.List;
+import java.util.UUID;
 
 public class AudioManager {
 
 	/**
 	 * Plays an audio file at the specified client
 	 * 
-	 * @param username the players username
+	 * @param uuid the players unique id
 	 * @param url the url of the audio file
 	 */
-	public void play(String username, String url){
-		List<WebSocketConnection> clients = getClient().getClientsByUsername(username);
+	public void play(UUID uuid, String url){
+		List<Client> clients = getClient().getClientsByUUID(uuid);
 		
-		for(WebSocketConnection client : clients){
-			new MessageBuilder("play", url)
+		for(Client client : clients){
+			new Message("play", url)
 				.send(client);
 		}
 	}
@@ -31,10 +30,10 @@ public class AudioManager {
 	 * @param url the url of the audio file
 	 */
 	public void play(String url){
-		List<WebSocketConnection> clients = getClient().getAllClients();
+		List<Client> clients = getClient().getAllClients();
 		
-		for(WebSocketConnection client : clients){
-			new MessageBuilder("play", url)
+		for(Client client : clients){
+			new Message("play", url)
 				.send(client);
 		}
 	}
@@ -42,13 +41,13 @@ public class AudioManager {
 	/**
 	 * Stop playing at an specified client
 	 * 
-	 * @param username the players username
+	 * @param uuid the players unique id
 	 */
-	public void stop(String username){
-		List<WebSocketConnection> clients = getClient().getClientsByUsername(username);
-		
-		for(WebSocketConnection client : clients){
-			new MessageBuilder("stop", "hammertime")
+	public void stop(UUID uuid){
+		List<Client> clients = getClient().getClientsByUUID(uuid);
+
+		for(Client client : clients){
+			new Message("stop", "hammertime")
 				.send(client);
 		}
 	}
@@ -58,16 +57,16 @@ public class AudioManager {
 	 * 
 	 */
 	public void stop(){
-		List<WebSocketConnection> clients = getClient().getAllClients();
+		List<Client> clients = getClient().getAllClients();
 		
-		for(WebSocketConnection client : clients){
-			new MessageBuilder("stop", "hammertime")
+		for(Client client : clients){
+			new Message("stop", "hammertime")
 				.send(client);
 		}
 	}
 	
 	private Audioclient getClient(){
-		return Main.client;
+		return Audioclient.getInstance();
 	}
 
 	/**
@@ -76,10 +75,10 @@ public class AudioManager {
 	 * @param message
 	 */
 	public void broadcast(String type, String message) {
-		List<WebSocketConnection> clients = getClient().getAllClients();
+		List<Client> clients = getClient().getAllClients();
 		
-		for(WebSocketConnection client : clients){
-			new MessageBuilder(type, message)
+		for(Client client : clients){
+			new Message(type, message)
 			.send(client);
 		}
 	}
