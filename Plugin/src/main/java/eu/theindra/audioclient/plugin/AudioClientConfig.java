@@ -18,6 +18,7 @@ public class AudioClientConfig {
     }
 
     public static AudioClientConfig load(AudioClientPlugin plugin){
+        AudioClientConfig result = new AudioClientConfig(1898);
         if(!plugin.getDataFolder().exists()){
             plugin.getDataFolder().mkdirs();
         }
@@ -25,13 +26,11 @@ public class AudioClientConfig {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         if(!configFile.exists()){
             try(Writer writer = new FileWriter(configFile)){
-                writer.write(gson.toJson(new AudioClientConfig(1898)));
+                writer.write(gson.toJson(result));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        AudioClientConfig result = new AudioClientConfig(1898);
         try(Reader reader = new FileReader(configFile)){
             result = gson.fromJson(reader, AudioClientConfig.class);
         } catch (IOException e) {
