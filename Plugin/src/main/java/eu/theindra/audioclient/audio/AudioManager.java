@@ -5,6 +5,7 @@ import eu.theindra.audioclient.auth.Client;
 import eu.theindra.audioclient.protocol.Message;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class AudioManager {
@@ -16,12 +17,8 @@ public class AudioManager {
 	 * @param url the url of the audio file
 	 */
 	public void play(UUID uuid, String url){
-		List<Client> clients = getClient().getClientsByUUID(uuid);
-		
-		for(Client client : clients){
-			new Message("play", url)
-				.send(client);
-		}
+		Optional<Client> optClient = getServer().getClientByUUID(uuid);
+		optClient.ifPresent(client -> new Message("play", url).send(client));
 	}
 	
 	/**
@@ -30,8 +27,8 @@ public class AudioManager {
 	 * @param url the url of the audio file
 	 */
 	public void play(String url){
-		List<Client> clients = getClient().getAllClients();
-		
+		List<Client> clients = getServer().getClients();
+
 		for(Client client : clients){
 			new Message("play", url)
 				.send(client);
@@ -44,12 +41,8 @@ public class AudioManager {
 	 * @param uuid the players unique id
 	 */
 	public void stop(UUID uuid){
-		List<Client> clients = getClient().getClientsByUUID(uuid);
-
-		for(Client client : clients){
-			new Message("stop", "hammertime")
-				.send(client);
-		}
+		Optional<Client> optClient = getServer().getClientByUUID(uuid);
+		optClient.ifPresent(client -> new Message("stop", "hammertime").send(client));
 	}
 	
 	/**
@@ -57,7 +50,7 @@ public class AudioManager {
 	 * 
 	 */
 	public void stop(){
-		List<Client> clients = getClient().getAllClients();
+		List<Client> clients = getServer().getClients();
 		
 		for(Client client : clients){
 			new Message("stop", "hammertime")
@@ -65,17 +58,17 @@ public class AudioManager {
 		}
 	}
 	
-	private Audioclient getClient(){
+	private Audioclient getServer(){
 		return Audioclient.getInstance();
 	}
 
 	/**
 	 * Broadcasts a custom message at every connected client
-	 * @param type
-	 * @param message
+	 * @param type the type of the message
+	 * @param message the message
 	 */
 	public void broadcast(String type, String message) {
-		List<Client> clients = getClient().getAllClients();
+		List<Client> clients = getServer().getClients();
 		
 		for(Client client : clients){
 			new Message(type, message)

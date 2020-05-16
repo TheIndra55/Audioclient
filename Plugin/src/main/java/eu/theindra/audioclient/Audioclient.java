@@ -7,10 +7,9 @@ import org.webbitserver.WebServers;
 import org.webbitserver.WebSocketConnection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Audioclient {
 
@@ -23,7 +22,7 @@ public class Audioclient {
 	private final int port;
 	private WebServer webServer;
 	
-	private final HashMap<Client, UUID> clients = new HashMap<>();
+	private final List<Client> clients = new ArrayList<>();
 	
 	public Audioclient(int port){
 		this.port = port;
@@ -48,27 +47,25 @@ public class Audioclient {
 		return port;
 	}
 	
-	public List<Client> getClientsByUUID(UUID uuid){
-		return getClients().keySet().stream().filter(client -> getClients().get(client).equals(uuid)).collect(Collectors.toList());
-	}
-	
-	public List<Client> getAllClients(){
-		return new ArrayList<>(getClients().keySet());
+	public Optional<Client> getClientByUUID(UUID uuid){
+		return getClients().stream().filter(client -> client.getUniqueId().equals(uuid)).findFirst();
 	}
 	
 	public void removeClient(WebSocketConnection connection){
 		clients.remove(connection);
 	}
 	
-	public boolean checkClient(WebSocketConnection connection){
-		return clients.containsKey(connection);
+	public boolean isConnected(WebSocketConnection connection){
+		return clients.stream().anyMatch(c -> c.getConnection().equals(connection));
 	}
 	
 	public void addClient(UUID uuid, WebSocketConnection connection){
-		clients.put(new Client(uuid, connection), uuid);
+		if(!isConnected(connection)){
+			clients.add(new Client(uuid, connection));
+		}
 	}
 
-	public HashMap<Client, UUID> getClients() {
+	public List<Client> getClients() {
 		return clients;
 	}
 }
