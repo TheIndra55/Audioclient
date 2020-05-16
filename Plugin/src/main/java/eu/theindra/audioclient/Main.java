@@ -1,37 +1,30 @@
 package eu.theindra.audioclient;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import eu.theindra.audioclient.auth.Auth;
 
-import eu.theindra.audioclient.commands.AudioclientCommand;
+import java.util.UUID;
 
-public class Main extends JavaPlugin {
-	
-	public static Audioclient client;
-	
+/**
+ * Bukkit wont let me create a debug program
+ * if class extends JavaPlugin
+ * ¯\_(ツ)_/¯
+ */
+public class Main {
+
 	// debugging purposes
     public static void main(String[] args) {
-		client = new Audioclient(8003);
-		
+    	Audioclient client = new Audioclient(80);
+
+    	//debug token
+		UUID uuid = UUID.randomUUID();
+		String token = Auth.generate(uuid);
+		System.out.println(token);
+
 		client.init();
 		client.startServer();
-		
+
 		while(true){
-			
+
 		}
     }
-	
-	public void onEnable(){
-		// TODO: Load config and the port from config
-		client = new Audioclient(8003);
-		
-		client.init();
-		client.startServer();
-		
-		getCommand("audioclient").setExecutor(new AudioclientCommand());
-		
-	}
-	
-	public void onDisable(){
-		client.stopServer();
-	}
 }

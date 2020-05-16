@@ -1,24 +1,33 @@
 package eu.theindra.audioclient;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import eu.theindra.audioclient.auth.Client;
+import eu.theindra.audioclient.handler.WebsocketHandler;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
 import org.webbitserver.WebSocketConnection;
 
-import eu.theindra.audioclient.handler.WebsocketHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class Audioclient {
+
+	private static Audioclient instance;
+
+	public static Audioclient getInstance() {
+		return instance;
+	}
 
 	private final int port;
 	private WebServer webServer;
 	
-	private HashMap<WebSocketConnection, String> clients = new HashMap<WebSocketConnection, String>();
+	private final List<Client> clients = new ArrayList<>();
 	
 	public Audioclient(int port){
 		this.port = port;
+
+		instance = this;
 	}
 	
 	public void init(){
@@ -38,41 +47,25 @@ public class Audioclient {
 		return port;
 	}
 	
-	public List<WebSocketConnection> getClientsByUsername(String username){
-		List<WebSocketConnection> clients = new ArrayList<WebSocketConnection>();
-		
-		for(WebSocketConnection client : getClients().keySet()){
-			if(getClients().get(client).equals(username)){
-				clients.add(client);
-			}
-		}
-		
-		return clients;
-	}
-	
-	public List<WebSocketConnection> getAllClients(){
-		List<WebSocketConnection> clients = new ArrayList<WebSocketConnection>();
-		
-		for(WebSocketConnection client : getClients().keySet()){
-			clients.add(client);
-		}
-		
-		return clients;
+	public Optional<Client> getClientByUUID(UUID uuid){
+		return getClients().stream().filter(client -> client.getUniqueId().equals(uuid)).findFirst();
 	}
 	
 	public void removeClient(WebSocketConnection connection){
 		clients.remove(connection);
 	}
 	
-	public boolean checkClient(WebSocketConnection connection){
-		return clients.containsKey(connection);
+	public boolean isConnected(WebSocketConnection connection){
+		return clients.stream().anyMatch(c -> c.getConnection().equals(connection));
 	}
 	
-	public void addClient(WebSocketConnection connection, String name){
-		clients.put(connection, name);
+	public void addClient(UUID uuid, WebSocketConnection connection){
+		if(!isConnected(connection)){
+			clients.add(new Client(uuid, connection));
+		}
 	}
-	
-	public HashMap<WebSocketConnection, String> getClients(){
+
+	public List<Client> getClients() {
 		return clients;
 	}
 }
